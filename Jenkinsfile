@@ -4,12 +4,15 @@ pipeline {
     environment {
         DOCKERHUB_USER = 'jeffreyrivera'
         IMAGE_TAG = 'phase6'
+        KUBECONFIG = 'C:\\Users\\Jeffrey\\.kube\\config'
     }
 
     stages {
+
         stage('Checkout GitHub') {
             steps {
-                git branch: 'main', url: 'https://github.com/Jeffrey-Rivera/devops-voting-app'
+                git branch: 'main',
+                    url: 'https://github.com/Jeffrey-Rivera/devops-voting-app'
             }
         }
 
@@ -33,7 +36,13 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )
+                ]) {
                     bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
                 }
             }
@@ -54,6 +63,20 @@ pipeline {
         stage('Push Worker Image') {
             steps {
                 bat 'docker push %DOCKERHUB_USER%/voting-app-worker:%IMAGE_TAG%'
+            }
+        }
+
+        stage('Deploy Kubernetes') {
+            steps {
+                bat 'kubectl apply -f k8s-config -n voting-app'
+                bat 'kubectl apply -f k8s-specifications -n voting-app'
+            }
+        }
+
+        stage('Verify Kubernetes') {
+            steps {
+                bat 'kubectl get deployments -n voting-app -o wide'
+                bat 'kubectl get pods -n voting-app'
             }
         }
     }
