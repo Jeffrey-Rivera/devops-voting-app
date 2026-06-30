@@ -1,6 +1,53 @@
+# ==========================
+# Python
+# ==========================
 *.pyc
-project.lock.json
+__pycache__/
+
+# ==========================
+# Node.js
+# ==========================
+node_modules/
+npm-debug.log*
+
+# ==========================
+# .NET
+# ==========================
 bin/
 obj/
+
+# ==========================
+# Visual Studio / VS Code
+# ==========================
 .vs/
-node_modules/
+.vscode/
+
+# ==========================
+# Terraform
+# ==========================
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+terraform/override.tf
+terraform/override.tf.json
+terraform/*_override.tf
+terraform/*_override.tf.json
+
+# Keep provider lock file
+!terraform/.terraform.lock.hcl
+
+# Sensitive variables (optional)
+# Uncomment if terraform.tfvars contains secrets
+# terraform/terraform.tfvars
+
+# ==========================
+# macOS
+# ==========================
+.DS_Store
+
+# ==========================
+# Windows
+# ==========================
+Thumbs.db
+Desktop.ini
